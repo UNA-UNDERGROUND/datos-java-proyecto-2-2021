@@ -31,7 +31,21 @@ public class Grafo {
         this.v = matrizAdyacencia.length;
     }
 
-    // verifica si el grafo
+    /**
+     * nos indica si un nodo es valido como siguiente salto
+     * <ul>
+     * <li>no es el mismo nodo, esto se cumple ya que se marca como visitado antes
+     * de llamarse esta funcion</li>
+     * <li>no es un nodo de la lista de visitados</li>
+     * <li>tiene una arista con el nodo actual</li>
+     * </ul>
+     * 
+     * @param nodo             nodo actual
+     * @param matrizAdyacencia matriz de adyacencia
+     * @param visitados        lista de visitados
+     * @param posicion         posicion de la lista de visitados
+     * @return true si se puede visitar, false en caso contrario
+     */
     private boolean puedeSaltar(int nodo, int[][] matrizAdyacencia, int[] visitados, int posicion) {
 
         // verifica si el nodo es adyacente al nodo previo
