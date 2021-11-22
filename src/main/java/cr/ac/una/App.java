@@ -22,16 +22,23 @@ import cr.ac.una.modelo.Grafo;
 
 public final class App {
 
-    private static void imprimirCiclo(List<String> camino) {
-        System.out.println("Ciclo Hamiltoniano:");
-        if (camino.isEmpty()) {
-            System.out.println("No hay ciclo hamiltoniano");
+    private static void imprimirRuta(List<String> ruta, boolean esCiclo) {
+        System.out.println("Ruta Hamiltoniana:");
+        if (ruta.isEmpty()) {
+            System.out.println("No hay ruta Hamiltoniana");
             return;
         }
-        for (String nodo : camino) {
-            System.out.print(nodo + "->");
+        for (int i = 0; i < ruta.size(); i++) {
+            String nodo = ruta.get(i);
+            System.out.print(nodo);
+            if (i < ruta.size() - 1) {
+                System.out.print("->");
+            }
         }
-        System.out.println(camino.get(0));
+        if (esCiclo) {
+            System.out.print("->");
+            System.out.println(ruta.get(0));
+        }
     }
 
     public static void main(String[] args) {
@@ -52,8 +59,10 @@ public final class App {
         // creamos el grafo
         Grafo grafo = new Grafo(matrizAdyacencia);
         // imprimimos el ciclo hamiltoniano
-        List<String> camino = grafo.cicloHamiltoniano();
-        imprimirCiclo(camino);
+        List<String> ciclo = grafo.cicloHamiltoniano();
+        List<String> camino = grafo.caminoHamiltoniano();
+        imprimirRuta(ciclo, true);
+        imprimirRuta(camino, false);
 
     }
 }
