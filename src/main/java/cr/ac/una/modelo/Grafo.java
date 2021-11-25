@@ -24,11 +24,8 @@ import java.util.List;
  * hamiltoniano
  */
 public class Grafo {
-    int v = 0;
+    public Grafo() {
 
-    public Grafo(int[][] matrizAdyacencia) {
-        this.matrizAdyacencia = matrizAdyacencia;
-        this.v = matrizAdyacencia.length;
     }
 
     /**
@@ -73,6 +70,7 @@ public class Grafo {
      * @return true si se encuentra un ciclo hamiltoniano
      */
     private Boolean HamiltonianoR(int[][] matrizAdj, int[] visitados, int posicion, boolean esCiclo) {
+        int v = matrizAdj.length;
         // caso base, estan todos los nodos visitados
         if (posicion == v) {
             // verifica si hay una arista entre el ultimo nodo visitado y el primero
@@ -103,7 +101,7 @@ public class Grafo {
      * 
      * @return la lista de nodos que conforman el ciclo hamiltoniano
      */
-    public List<String> cicloHamiltoniano() {
+    public List<Nodo> cicloHamiltoniano() {
         return resolverHamiltoniano(true);
     }
 
@@ -112,7 +110,7 @@ public class Grafo {
      * 
      * @return la lista de nodos que conforman el camino hamiltoniano
      */
-    public List<String> caminoHamiltoniano() {
+    public List<Nodo> caminoHamiltoniano() {
         return resolverHamiltoniano(false);
     }
 
@@ -122,7 +120,9 @@ public class Grafo {
      * @param esCiclo si es ciclo o no
      * @return lista de nodos visitados
      */
-    public List<String> resolverHamiltoniano(boolean esCiclo) {
+    public List<Nodo> resolverHamiltoniano(boolean esCiclo) {
+        int[][] matrizAdyacencia = generarMatrizAdyacencia();
+        int v = matrizAdyacencia.length;
         int[] ruta = new int[v];
         for (int i = 0; i < matrizAdyacencia.length; i++) {
             ruta[i] = -1;
@@ -132,14 +132,67 @@ public class Grafo {
         // en este caso, el vertice 0
         ruta[0] = 0;
         if (!HamiltonianoR(matrizAdyacencia, ruta, 1, esCiclo)) {
-            return new ArrayList<String>();
+            return new ArrayList<Nodo>();
         }
-        List<String> resultado = new ArrayList<String>();
+        List<Nodo> resultado = new ArrayList<>();
         for (int i = 0; i < ruta.length; i++) {
-            resultado.add(String.valueOf(ruta[i]));
+            resultado.add(nodos.get(ruta[i]));
         }
         return resultado;
     }
 
-    private int[][] matrizAdyacencia;
+    private int[][] generarMatrizAdyacencia() {
+        // este metodo se puede optimizar
+        // sin embargo, para el ejemplo, se deja asi
+        int v = nodos.size();
+        int[][] matrizAdyacencia = new int[v][v];
+        for (int i = 0; i < matrizAdyacencia.length; i++) {
+            matrizAdyacencia[i][i] = 0;
+            Nodo nodo = nodos.get(i);
+            for (int j = 0; j < matrizAdyacencia.length; j++) {
+                // revisamos si el nodo j es adyacente al nodo i
+                if (nodo.esAdyacente(nodos.get(j))) {
+                    matrizAdyacencia[i][j] = 1;
+                }
+            }
+        }
+
+        return matrizAdyacencia;
+    }
+
+    public void agregarNodo(String nombre) {
+        // primero verificamos que el nodo no exista
+        if (buscarNodo(nombre) != null) {
+            return;
+        }
+        nodos.add(new Nodo(nombre));
+    }
+
+    public Nodo buscarNodo(String nombre) {
+        for (Nodo nodo : nodos) {
+            if (nodo.getId().equals(nombre)) {
+                return nodo;
+            }
+        }
+        return null;
+    }
+
+    public void agregarArista(String nodo1, String nodo2, int peso) {
+        // primero verificamos que los nodos existan
+        Nodo n1 = buscarNodo(nodo1);
+        Nodo n2 = buscarNodo(nodo2);
+        if (n1 == null || n2 == null) {
+            return;
+        }
+        // verificamos que la arista no exista
+        if (n1.esAdyacente(n2)) {
+            return;
+        }
+        n1.agregarAdyacente(n2, peso);
+        n2.agregarAdyacente(n1, peso);
+    }
+
+    List<Nodo> nodos = new ArrayList<>();
+
+    // private int[][] matrizAdyacencia;
 }
